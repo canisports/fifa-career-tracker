@@ -248,7 +248,8 @@ export default function Home() {
                   <button
                     onClick={async () => {
                       try {
-                        const data = await require('../lib/database').dbHelpers.exportData();
+                       const { dbHelpers } = await import('../lib/database');
+const data = await dbHelpers.exportData();
                         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
                         const url = URL.createObjectURL(blob);
                         const a = document.createElement('a');
@@ -269,7 +270,8 @@ export default function Home() {
                     onClick={async () => {
                       if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
                         try {
-                          await require('../lib/database').dbHelpers.clearAllData();
+                          const { dbHelpers } = await import('../lib/database');
+await dbHelpers.clearAllData();
                           setRefreshTrigger(prev => prev + 1);
                           alert('All data cleared successfully');
                         } catch (error) {
