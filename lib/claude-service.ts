@@ -7,22 +7,22 @@ export interface ScreenshotAnalysisResult {
 }
 
 export interface LeagueTableData {
-  teamName: string;
-  league: string;
-  position: number;
-  points: number;
-  wins: number;
-  draws: number;
-  losses: number;
-  goalsFor: number;
-  goalsAgainst: number;
-  goalDifference: number;
-  gamesPlayed: number;
+  teamName?: string;
+  league?: string;
+  position?: number;
+  points?: number;
+  wins?: number;
+  draws?: number;
+  losses?: number;
+  goalsFor?: number;
+  goalsAgainst?: number;
+  goalDifference?: number;
+  gamesPlayed?: number;
   form?: string;
 }
 
 export interface TeamStatsData {
-  teamName: string;
+  teamName?: string;
   overallRating?: number;
   formation?: string;
   attackRating?: number;
@@ -32,13 +32,13 @@ export interface TeamStatsData {
 }
 
 export interface PlayerStatsData {
-  players: Array<{
-    name: string;
-    position: string;
-    rating: number;
-    goals: number;
-    assists: number;
-    appearances: number;
+  players?: Array<{
+    name?: string;
+    position?: string;
+    rating?: number;
+    goals?: number;
+    assists?: number;
+    appearances?: number;
     age?: number;
     nationality?: string;
   }>;
