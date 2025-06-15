@@ -170,7 +170,7 @@ export default function ScreenshotUpload({ onDataExtracted, claudeApiKey }: Scre
 
       const timestamp = new Date();
 
-    // Save extracted data to database
+// Save extracted data to database
 const saveExtractedData = async (result: ScreenshotAnalysisResult) => {
   try {
     // Get or create current season
@@ -179,52 +179,49 @@ const saveExtractedData = async (result: ScreenshotAnalysisResult) => {
       const seasonId = await dbHelpers.createSeason({
         name: `Season ${new Date().getFullYear()}`,
         startDate: new Date(),
-        gameVersion: 'FC25', // Default, user can change later
+        gameVersion: 'FC25',
         isActive: true
       });
       currentSeason = await dbHelpers.getCurrentSeason();
     }
 
-    if (!currentSeason) return;
+    if (!currentSeason || !result.data) return;
 
     const timestamp = new Date();
+    const data = result.data as any; // Use any type to avoid strict typing issues
 
     // Save based on data type
-    if (result.type === 'league_table' && result.data) {
-      const leagueData = result.data as LeagueTableData;
+    if (result.type === 'league_table') {
       await dbHelpers.addTeamSnapshot({
         seasonId: currentSeason.id!,
         timestamp,
-        teamName: leagueData.teamName || 'Unknown Team',
-        league: leagueData.league || 'Unknown League',
-        position: leagueData.position || 0,
-        points: leagueData.points || 0,
-        wins: leagueData.wins || 0,
-        draws: leagueData.draws || 0,
-        losses: leagueData.losses || 0,
-        goalsFor: leagueData.goalsFor || 0,
-        goalsAgainst: leagueData.goalsAgainst || 0,
-        goalDifference: leagueData.goalDifference || 0,
-        gamesPlayed: leagueData.gamesPlayed || 0,
-        form: leagueData.form
+        teamName: data.teamName || 'Unknown Team',
+        league: data.league || 'Unknown League',
+        position: data.position || 0,
+        points: data.points || 0,
+        wins: data.wins || 0,
+        draws: data.draws || 0,
+        losses: data.losses || 0,
+        goalsFor: data.goalsFor || 0,
+        goalsAgainst: data.goalsAgainst || 0,
+        goalDifference: data.goalDifference || 0,
+        gamesPlayed: data.gamesPlayed || 0,
+        form: data.form
       });
-    } else if (result.type === 'player_stats' && result.data) {
-      const playerData = result.data as PlayerStatsData;
-      if (playerData.players && Array.isArray(playerData.players)) {
-        const playerStats = playerData.players.map((player) => ({
-          seasonId: currentSeason!.id!,
-          timestamp,
-          playerName: player.name || 'Unknown Player',
-          position: player.position || 'Unknown',
-          rating: player.rating || 0,
-          goals: player.goals || 0,
-          assists: player.assists || 0,
-          appearances: player.appearances || 0,
-          age: player.age,
-          nationality: player.nationality
-        }));
-        await dbHelpers.addPlayerStats(playerStats);
-      }
+    } else if (result.type === 'player_stats' && data.players && Array.isArray(data.players)) {
+      const playerStats = data.players.map((player: any) => ({
+        seasonId: currentSeason!.id!,
+        timestamp,
+        playerName: player.name || 'Unknown Player',
+        position: player.position || 'Unknown',
+        rating: player.rating || 0,
+        goals: player.goals || 0,
+        assists: player.assists || 0,
+        appearances: player.appearances || 0,
+        age: player.age,
+        nationality: player.nationality
+      }));
+      await dbHelpers.addPlayerStats(playerStats);
     }
   } catch (error) {
     console.error('Error saving extracted data:', error);
