@@ -6,7 +6,7 @@ export interface Season {
   name: string;
   startDate: Date;
   endDate?: Date;
-  gameVersion: string; // FC24, FC25, etc.
+  gameVersion: string;
   isActive: boolean;
   createdAt: Date;
 }
@@ -25,8 +25,8 @@ export interface TeamSnapshot {
   goalsFor: number;
   goalsAgainst: number;
   goalDifference: number;
-  form?: string;
   gamesPlayed: number;
+  form?: string;
 }
 
 export interface PlayerStats {
