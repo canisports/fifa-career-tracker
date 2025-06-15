@@ -78,7 +78,7 @@ export const db = new CareerModeDB();
 // Helper functions for common operations
 export const dbHelpers = {
   // Season management
-  async createSeason(seasonData: Omit<Season, 'id' | 'createdAt'>): Promise<number> {
+  async createSeason(seasonData: Omit<Season, 'id' | 'createdAt'>): Promise<any> {
     // Set any existing active season to inactive
     await db.seasons.where('isActive').equals(1).modify({ isActive: false });
     
@@ -97,7 +97,7 @@ export const dbHelpers = {
   },
 
   // Team snapshot management
-  async addTeamSnapshot(snapshotData: Omit<TeamSnapshot, 'id'>): Promise<number> {
+  async addTeamSnapshot(snapshotData: Omit<TeamSnapshot, 'id'>): Promise<any> {
     return await db.teamSnapshots.add(snapshotData);
   },
 
@@ -118,7 +118,7 @@ export const dbHelpers = {
   },
 
   // Player stats management
-  async addPlayerStats(playerData: Omit<PlayerStats, 'id'>[]): Promise<number[]> {
+  async addPlayerStats(playerData: Omit<PlayerStats, 'id'>[]): Promise<any> {
     return await db.playerStats.bulkAdd(playerData, { allKeys: true });
   },
 
@@ -155,7 +155,7 @@ export const dbHelpers = {
   },
 
   // Screenshot tracking to avoid duplicates
-  async markScreenshotProcessed(filename: string, type: ProcessedScreenshot['screenshotType'], data: any, confidence: number): Promise<number> {
+  async markScreenshotProcessed(filename: string, type: ProcessedScreenshot['screenshotType'], data: any, confidence: number): Promise<any> {
     return await db.processedScreenshots.add({
       filename,
       processedAt: new Date(),
