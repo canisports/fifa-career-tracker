@@ -80,7 +80,7 @@ export const dbHelpers = {
   // Season management
   async createSeason(seasonData: Omit<Season, 'id' | 'createdAt'>): Promise<number> {
     // Set any existing active season to inactive
-    await db.seasons.where('isActive').equals(true).modify({ isActive: false });
+    await db.seasons.where('isActive').equals(1).modify({ isActive: false });
     
     return await db.seasons.add({
       ...seasonData,
@@ -89,7 +89,7 @@ export const dbHelpers = {
   },
 
   async getCurrentSeason(): Promise<Season | undefined> {
-    return await db.seasons.where('isActive').equals(true).first();
+    return await db.seasons.where('isActive').equals(1).first();
   },
 
   async getAllSeasons(): Promise<Season[]> {
