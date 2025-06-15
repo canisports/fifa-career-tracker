@@ -87,16 +87,16 @@ export default function Dashboard({ refreshTrigger }: DashboardProps) {
   const switchSeason = async (seasonId: number) => {
     try {
       // Set all seasons to inactive
-await Promise.all(
-  allSeasons.map(async season => {
-    if (season.id) {
-      await db.seasons.update(season.id, { isActive: false });
-    }
-  })
-);
-
-// Set selected season as active
-await db.seasons.update(seasonId, { isActive: true });
+      await Promise.all(
+        allSeasons.map(async season => {
+          if (season.id) {
+            await db.seasons.update(season.id, { isActive: false });
+          }
+        })
+      );
+      
+      // Set selected season as active
+      await db.seasons.update(seasonId, { isActive: true });
       await loadData();
     } catch (error) {
       console.error('Error switching season:', error);
