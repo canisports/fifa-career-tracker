@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Settings, Upload as UploadIcon, BarChart3, Key, Info } from 'lucide-react';
 import ScreenshotUpload from '../components/ScreenshotUpload';
 import Dashboard from '../components/Dashboard';
+import { dbHelpers } from '../lib/database';
 
 type TabType = 'dashboard' | 'upload' | 'settings';
 
@@ -39,6 +40,35 @@ export default function Home() {
   const handleDevLogin = () => {
     setIsAuthenticated(true);
     localStorage.setItem('is-authenticated', 'true');
+  };
+
+  // Export data function
+  const exportData = async () => {
+    try {
+      const data = await dbHelpers.exportData();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `fifa-career-data-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      alert('Export failed');
+    }
+  };
+
+  // Clear all data function
+  const clearAllData = async () => {
+    if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+      try {
+        await dbHelpers.clearAllData();
+        setRefreshTrigger(prev => prev + 1);
+        alert('All data cleared successfully');
+      } catch (error) {
+        alert('Failed to clear data');
+      }
+    }
   };
 
   // Landing page for non-authenticated users
@@ -246,39 +276,14 @@ export default function Home() {
                 </p>
                 <div className="flex gap-3">
                   <button
-                    onClick={async () => {
-                      try {
-                       const { dbHelpers } = await import('../lib/database');
-const data = await dbHelpers.exportData();
-                        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `fifa-career-data-${new Date().toISOString().split('T')[0]}.json`;
-                        a.click();
-                        URL.revokeObjectURL(url);
-                      } catch (error) {
-                        alert('Export failed');
-                      }
-                    }}
+                    onClick={exportData}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
                   >
                     Export Data
                   </button>
                   
                   <button
-                    onClick={async () => {
-                      if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
-                        try {
-                          const { dbHelpers } = await import('../lib/database');
-await dbHelpers.clearAllData();
-                          setRefreshTrigger(prev => prev + 1);
-                          alert('All data cleared successfully');
-                        } catch (error) {
-                          alert('Failed to clear data');
-                        }
-                      }
-                    }}
+                    onClick={clearAllData}
                     className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm"
                   >
                     Clear All Data
