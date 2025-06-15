@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Trophy, Target, TrendingUp, Users, BarChart3 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { Season, TeamSnapshot, PlayerStats, dbHelpers } from '../lib/database';
+import { Season, TeamSnapshot, PlayerStats, dbHelpers, db } from '../lib/database';
 
 interface DashboardProps {
   refreshTrigger?: number;
@@ -87,14 +87,16 @@ export default function Dashboard({ refreshTrigger }: DashboardProps) {
   const switchSeason = async (seasonId: number) => {
     try {
       // Set all seasons to inactive
-      await Promise.all(
-        allSeasons.map(season => 
-          dbHelpers.db.seasons.update(season.id!, { isActive: false })
-        )
-      );
-      
-      // Set selected season as active
-      await dbHelpers.db.seasons.update(seasonId, { isActive: true });
+await Promise.all(
+  allSeasons.map(async season => {
+    if (season.id) {
+      await db.seasons.update(season.id, { isActive: false });
+    }
+  })
+);
+
+// Set selected season as active
+await db.seasons.update(seasonId, { isActive: true });
       await loadData();
     } catch (error) {
       console.error('Error switching season:', error);
