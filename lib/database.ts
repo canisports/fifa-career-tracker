@@ -93,7 +93,8 @@ export const dbHelpers = {
   },
 
   async getAllSeasons(): Promise<Season[]> {
-    return await db.seasons.orderBy('startDate').reverse().toArray();
+    const seasons = await db.seasons.toArray();
+    return seasons.sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
   },
 
   // Team snapshot management
@@ -105,16 +106,15 @@ export const dbHelpers = {
     return await db.teamSnapshots
       .where('seasonId')
       .equals(seasonId)
-      .orderBy('timestamp')
       .toArray();
   },
 
   async getLatestTeamSnapshot(seasonId: number): Promise<TeamSnapshot | undefined> {
-    return await db.teamSnapshots
+    const snapshots = await db.teamSnapshots
       .where('seasonId')
       .equals(seasonId)
-      .orderBy('timestamp')
-      .last();
+      .toArray();
+    return snapshots.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())[0];
   },
 
   // Player stats management
@@ -126,7 +126,6 @@ export const dbHelpers = {
     return await db.playerStats
       .where('seasonId')
       .equals(seasonId)
-      .orderBy('timestamp')
       .toArray();
   },
 
