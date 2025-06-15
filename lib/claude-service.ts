@@ -2,46 +2,8 @@
 export interface ScreenshotAnalysisResult {
   type: 'league_table' | 'team_stats' | 'player_stats' | 'unknown';
   confidence: number;
-  data: LeagueTableData | TeamStatsData | PlayerStatsData | null;
+  data: any;
   errors?: string[];
-}
-
-export interface LeagueTableData {
-  teamName?: string;
-  league?: string;
-  position?: number;
-  points?: number;
-  wins?: number;
-  draws?: number;
-  losses?: number;
-  goalsFor?: number;
-  goalsAgainst?: number;
-  goalDifference?: number;
-  gamesPlayed?: number;
-  form?: string;
-}
-
-export interface TeamStatsData {
-  teamName?: string;
-  overallRating?: number;
-  formation?: string;
-  attackRating?: number;
-  midfieldRating?: number;
-  defenseRating?: number;
-  season?: string;
-}
-
-export interface PlayerStatsData {
-  players?: Array<{
-    name?: string;
-    position?: string;
-    rating?: number;
-    goals?: number;
-    assists?: number;
-    appearances?: number;
-    age?: number;
-    nationality?: string;
-  }>;
 }
 
 export class ClaudeVisionService {
