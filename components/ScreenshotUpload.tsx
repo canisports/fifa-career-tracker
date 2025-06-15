@@ -190,12 +190,15 @@ export default function ScreenshotUpload({ onDataExtracted, claudeApiKey }: Scre
         // Save to database if successful
         if (analysisResult.confidence > 0.3 && analysisResult.data) {
           await saveExtractedData(analysisResult);
-          await dbHelpers.markScreenshotProcessed(
-            uploadedFile.file.name,
-            analysisResult.type,
-            analysisResult.data,
-            analysisResult.confidence
-          );
+          // Only mark as processed if it's a valid type (not 'unknown')
+          if (analysisResult.type !== 'unknown') {
+            await dbHelpers.markScreenshotProcessed(
+              uploadedFile.file.name,
+              analysisResult.type as 'league_table' | 'team_stats' | 'player_stats',
+              analysisResult.data,
+              analysisResult.confidence
+            );
+          }
         }
       }
 
