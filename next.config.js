@@ -5,12 +5,7 @@ const nextConfig = {
   images: {
     unoptimized: true
   },
-  // Enable static export for client-side only app
-  distDir: 'out',
-  // Disable server-side features since we're going full client-side
-  experimental: {
-    runtime: 'nodejs'
-  }
+  distDir: 'out'
 }
 
 module.exports = nextConfig
